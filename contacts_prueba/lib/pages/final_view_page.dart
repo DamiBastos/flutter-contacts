@@ -16,7 +16,7 @@ class FinalViewPage extends StatefulWidget {
 }
 
 class _FinalViewPageState extends State<FinalViewPage> {
-  final Color _standardColor = Color.fromRGBO(124, 101, 255, 1);
+  final Color _standardColor = const Color.fromRGBO(124, 101, 255, 1);
   final Uri _url = Uri.parse('https://www.neivor.com');
 
   Future<void> _launchUrl() async {
@@ -127,11 +127,11 @@ class _FinalViewPageState extends State<FinalViewPage> {
                                 children: const [
                                   Icon(UniconsLine.building),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.all(8.0),
                                     child: Text('Torrel - 101'),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.all(8.0),
                                     child: Icon(UniconsLine.user),
                                   ),
                                   Text('Manuel Sanchez')
@@ -139,7 +139,7 @@ class _FinalViewPageState extends State<FinalViewPage> {
                               ),
                             ),
                             const Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Text(
                                   'Francisco Javier Clavijero 51, CDMX, México'),
                             ),
@@ -197,7 +197,7 @@ class _FinalViewPageState extends State<FinalViewPage> {
       )),
       bottomSheet: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FootBar(context, 'Whatsapp', HomePage()),
+        child: footBar(context, 'Whatsapp', const HomePage()),
       ),
     );
   }

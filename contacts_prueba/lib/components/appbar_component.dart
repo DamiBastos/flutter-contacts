@@ -1,8 +1,6 @@
-import 'package:contacts_prueba/pages/detail_page.dart';
 import 'package:flutter/material.dart';
-import '../pages/select_contact_page.dart';
 
-Widget AppBarHome(_context, String _textTitle) {
+Widget appBarHome(context, String textTitle) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -12,11 +10,11 @@ Widget AppBarHome(_context, String _textTitle) {
             mini: true,
             elevation: 0,
             onPressed: () {
-              Navigator.of(_context).pop();
+              Navigator.of(context).pop();
             },
-            child: Icon(Icons.arrow_back),
             foregroundColor: Colors.black,
-            backgroundColor: Color.fromARGB(255, 240, 240, 240)),
+            backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+            child: const Icon(Icons.arrow_back)),
       ),
       Padding(
         padding: const EdgeInsets.all(9.0),
@@ -24,8 +22,8 @@ Widget AppBarHome(_context, String _textTitle) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              _textTitle,
-              style: TextStyle(
+              textTitle,
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),

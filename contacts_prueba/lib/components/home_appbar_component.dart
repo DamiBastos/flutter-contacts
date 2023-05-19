@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget AppBarHome(String textTitle) {
+Widget appBarHome(String textTitle) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [

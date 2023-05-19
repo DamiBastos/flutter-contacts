@@ -14,7 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Color standardColor = const Color.fromRGBO(124, 101, 255, 1);
-
   List<Contact>? contacts;
   bool permissionDenied = false;
 
@@ -24,8 +23,9 @@ class _HomePageState extends State<HomePage> {
     } else {
       final getContacts = await FlutterContacts.getContacts();
       setState(() => contacts = getContacts);
+      if (!mounted) return;
       showModalBottomSheet(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15), topRight: Radius.circular(15))),
           context: context,
@@ -38,12 +38,12 @@ class _HomePageState extends State<HomePage> {
                         topRight: Radius.circular(20))),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(30),
+                    const Padding(
+                      padding: EdgeInsets.all(30),
                       child: Icon(UniconsLine.user_exclamation, size: 50),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Sincroniza tus contactos',
                         style: TextStyle(
@@ -52,9 +52,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
-                        child: Text(
+                        child: const Text(
                           'Permite el acceso para invitar a tu lista de amigos y familiares a tu condominio',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -71,14 +71,14 @@ class _HomePageState extends State<HomePage> {
                             foregroundColor: Colors.white,
                             fixedSize: Size.fromWidth(
                                 MediaQuery.of(context).size.width),
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20)))),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SelectContact()));
+                              builder: (context) => const SelectContact()));
                         },
-                        child: Text('Permitir'),
+                        child: const Text('Permitir'),
                       ),
                     ),
                     Padding(
@@ -89,14 +89,14 @@ class _HomePageState extends State<HomePage> {
                               foregroundColor: Colors.black,
                               fixedSize: Size.fromWidth(
                                   MediaQuery.of(context).size.width),
-                              shape: RoundedRectangleBorder(
+                              shape: const RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.black),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20)))),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('Omitir')),
+                          child: const Text('Omitir')),
                     )
                   ],
                 ));
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: AppBarHome('Autorizar acceso'),
+                child: appBarHome('Autorizar acceso'),
               ),
               Column(
                 children: [
@@ -128,19 +128,19 @@ class _HomePageState extends State<HomePage> {
                       Icons.cleaning_services,
                       'Acceso a personal del hogar',
                       'Registra una empleada doméstica, niñera u otros.',
-                      _fetchContacts),
+                      null),
                   cardHomeComponent(
                       context,
                       Icons.build_circle_outlined,
                       'Acceso a proveedor / mantenimiento',
                       'Registra a proveedor de servicios del hogar o condominio',
-                      _fetchContacts),
+                      null),
                   cardHomeComponent(
                       context,
                       UniconsLine.notes,
                       'Mi historial de visitas',
                       'Revisa los accesos que has autorizado',
-                      _fetchContacts),
+                      null),
                 ],
               ),
             ],

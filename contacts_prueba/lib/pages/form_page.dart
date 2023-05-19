@@ -4,26 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'confirm_page.dart';
 
-class DetailPage extends StatefulWidget {
-  final dynamic context;
-  final String? id;
-  final String? name;
-
-  const DetailPage({
-    super.key,
-    this.context,
-    this.id,
-    this.name,
-  });
+class FormPage extends StatefulWidget {
+  const FormPage({super.key});
 
   @override
-  State<DetailPage> createState() => _DetailPageState();
+  State<FormPage> createState() => _FormPageState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _FormPageState extends State<FormPage> {
+  final formKey = GlobalKey<FormState>();
   final Color _standardColor = const Color.fromRGBO(124, 101, 255, 1);
   bool _value = false;
-
   TextEditingController nameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController instructionsController = TextEditingController();
@@ -47,15 +38,16 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
-        child: Form(
-          child: Column(children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [appBarHome(context, 'Detalle de la visita')]),
-            ),
-            Column(
+        child: Column(children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [appBarHome(context, 'Detalle de la visita')]),
+          ),
+          Form(
+            key: formKey,
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
@@ -70,13 +62,21 @@ class _DetailPageState extends State<DetailPage> {
                       top: 2, left: 10, right: 10, bottom: 4),
                   child: SizedBox(
                     child: TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty ||
+                            !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                          return 'Introducir un nombre correcto';
+                        } else {
+                          return null;
+                        }
+                      },
+                      controller: nameController,
                       style: const TextStyle(),
                       decoration:
                           const InputDecoration(border: OutlineInputBorder()),
                     ),
                   ),
                 ),
-                Text(nameController.text),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Row(
@@ -109,7 +109,14 @@ class _DetailPageState extends State<DetailPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                      child: TextField(
+                      child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Introducir fecha de visita';
+                      } else {
+                        return null;
+                      }
+                    },
                     controller: dateController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -125,9 +132,10 @@ class _DetailPageState extends State<DetailPage> {
 
                       if (pickedDate != null) {
                         String formattedDate =
-                            DateFormat('yyyy-MM-dd').format(pickedDate);
+                            DateFormat('dd-MM-yyyy').format(pickedDate);
                         setState(() {
-                          dateController.text = formattedDate;
+                          dateController.text =
+                              formattedDate; //set output date to TextField value.
                         });
                       }
                     },
@@ -161,8 +169,8 @@ class _DetailPageState extends State<DetailPage> {
                 )
               ],
             ),
-          ]),
-        ),
+          ),
+        ]),
       )),
       bottomSheet: SizedBox(
         height: 90,
@@ -176,15 +184,19 @@ class _DetailPageState extends State<DetailPage> {
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)))),
               onPressed: () {
-                setvalues();
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ConfirmPage(
-                      name: nameController.text,
-                      date: dateController.text,
-                      value: _value,
-                      instructions: instructionsController.text,
-                      params: form),
-                ));
+                if (formKey.currentState!.validate()) {
+                  setvalues();
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ConfirmPage(
+                        name: nameController.text,
+                        date: dateController.text,
+                        value: _value,
+                        instructions: instructionsController.text,
+                        params: form),
+                  ));
+                } else {
+                  null;
+                }
               },
               child: const Text('Continuar',
                   style: TextStyle(

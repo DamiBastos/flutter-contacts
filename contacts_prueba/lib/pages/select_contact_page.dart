@@ -1,13 +1,13 @@
 import 'package:contacts_prueba/components/appbar_component.dart';
 import 'package:contacts_prueba/components/footbar_component.dart';
-import 'package:contacts_prueba/components/format_contact.dart';
+import 'package:contacts_prueba/components/format_card_contact.dart';
+import 'package:contacts_prueba/components/contact_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'detail_page.dart';
+import 'form_page.dart';
 
 class SelectContact extends StatefulWidget {
   const SelectContact({super.key});
-
   @override
   State<SelectContact> createState() => _SelectContactState();
 }
@@ -15,6 +15,7 @@ class SelectContact extends StatefulWidget {
 class _SelectContactState extends State<SelectContact> {
   bool _readyContacts = true;
   final Color _standardColor = const Color.fromRGBO(124, 101, 255, 1);
+  List<Contact>? _favorites;
   List<Contact>? _contacts;
   bool _permissionDenied = false;
   List<Contact> _filterContacts = [];
@@ -61,7 +62,7 @@ class _SelectContactState extends State<SelectContact> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 20),
-              child: AppBarHome(context, 'Autorizar acceso'),
+              child: appBarHome(context, 'Autorizar acceso'),
             ),
             Center(
               child: Padding(
@@ -147,13 +148,23 @@ class _SelectContactState extends State<SelectContact> {
                 ),
               ),
             ),
-            _body(),
+            _readyContacts
+                ? _body()
+                : const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+                    child: Center(
+                        child: Text(
+                      'No hay favoritos',
+                      style: TextStyle(fontSize: 20),
+                    )),
+                  ),
           ],
         ),
       ),
       bottomSheet: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FootBar(context, 'Registrar visitante', const DetailPage()),
+        child: footBar(context, 'Registrar visitante', const FormPage()),
       ),
     );
   }
@@ -169,9 +180,18 @@ class _SelectContactState extends State<SelectContact> {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
-        itemCount: _filterContacts!.isNotEmpty ? _filterContacts!.length : 3,
+        itemCount: _filterContacts.isNotEmpty ? _filterContacts.length : 3,
         itemBuilder: (context, i) {
-          return FormatContact(context, _contacts![i].displayName);
+          return InkWell(
+            onTap: () async {
+              final fullContact =
+                  await FlutterContacts.getContact(_contacts![i].id);
+              if (!mounted) return;
+
+              await crearPermiso(context, fullContact!);
+            },
+            child: formatCardContact(context, _contacts![i].displayName),
+          );
         });
   }
 }

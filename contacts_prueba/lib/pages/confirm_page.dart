@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:contacts_prueba/components/appbar_component.dart';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:contacts_prueba/pages/final_view_page.dart';
 import 'package:unicons/unicons.dart';
+
+import '../components/appbar_component.dart';
 
 class ConfirmPage extends StatefulWidget {
   final Map<String, dynamic>? params;
@@ -39,14 +41,16 @@ class _ConfirmPageState extends State<ConfirmPage> {
       );
       if (response.statusCode == 201) {
         boton = 'Acceso creado';
+        log('Status Code: ${response.statusCode}');
+        if (!mounted) return;
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => FinalViewPage(params: widget.params!)));
       }
     } on DioError catch (e) {
       if (e.response!.statusCode == 404) {
-        print(e.response!.statusCode);
+        log('Status Code: ${e.response!.statusCode}');
       } else {
-        print(e.message);
+        log(e.message.toString());
       }
     }
   }
@@ -64,7 +68,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppBarHome(context, 'Detalle de la visita'),
+                    appBarHome(context, 'Detalle de la visita'),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Container(
@@ -111,7 +115,9 @@ class _ConfirmPageState extends State<ConfirmPage> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            '${widget.value == true ? "Visita de varios días" : "Visita personal"}',
+                                            widget.value == true
+                                                ? "Visita de varios días"
+                                                : "Visita personal",
                                           )
                                         ],
                                       ),
@@ -307,11 +313,11 @@ class _ConfirmPageState extends State<ConfirmPage> {
               style: TextButton.styleFrom(
                   fixedSize:
                       Size.fromWidth(MediaQuery.of(context).size.width * 0.9),
-                  backgroundColor: Color.fromRGBO(124, 101, 255, 1),
+                  backgroundColor: const Color.fromRGBO(124, 101, 255, 1),
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)))),
               onPressed: () => {
-                    sendInfo(widget?.params ?? {}),
+                    sendInfo(widget.params ?? {}),
                   },
               child: Text(boton,
                   style: const TextStyle(
